@@ -1,0 +1,23 @@
+{
+  "name": "revealjs-template-markdown-vite",
+  "version": "1.0.0",
+  "description": "Lightweight template for creating and deploying RevealJS slides using markdown and vite.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": {
+    "name": "Vincent Emonet",
+    "email": "vincent.emonet@gmail.com"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "upgrade": "npx npm-check-updates -u && npm i"
+  },
+  "devDependencies": {
+    "@edc4it/reveal.js-clipcode": "^1.0.13",
+    "reveal.js": "^5.2.1",
+    "vite": "^6.2.5"
+  }
+}
