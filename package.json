@@ -1,7 +1,7 @@
 {
-  "name": "revealjs-template-markdown-vite",
+  "name": "llm-biodata-training",
   "version": "1.0.0",
-  "description": "Lightweight template for creating and deploying RevealJS slides using markdown and vite.",
+  "description": "SIB training - using Large Language Models for Biodata Exploration.",
   "type": "module",
   "private": true,
   "license": "MIT",

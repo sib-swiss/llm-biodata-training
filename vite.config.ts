@@ -3,7 +3,7 @@ import {defineConfig} from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   // The name of your repository if you deploy to GitHub pages:
-  base: '/revealjs-template-markdown-vite/',
+  base: '/llm-biodata-training/',
   server: {
     port: 3000,
   },
