@@ -240,7 +240,7 @@ llm = load_chat_model("mistral/mistral-large-latest")
 
 ## Stream a LLM response
 
-Instead of waiting for the complete LLM response we can stream it token per token, and print token usage at the end	
+Instead of waiting for the complete LLM response we can stream it token per token, and print token usage at the end
 
 ```python
 def ask(question: str) -> None:
@@ -248,7 +248,7 @@ def ask(question: str) -> None:
         print(resp.content, end="")
         if resp.usage_metadata:
             print(f"\n\n{resp.usage_metadata}")
-            
+
 ask("Which tools can I use  for comparative genomics?")
 ```
 
@@ -1015,6 +1015,6 @@ Production deployment for SIB endpoints (UniProt, Bgee, OMA, Rhea…)
 
 &nbsp;
 
-[Theorical slides here](https://drive.google.com/file/d/1YJjCgBh2fLM3GoWmufqlx4bxbw7eiKZ_/view)
+[Theorical slides here](2025-05-19-LLM_from_Theory_to_Practice.pdf)
 
 Standalone components available as a pip package: [pypi.org/project/sparql-llm](https://pypi.org/project/sparql-llm)
