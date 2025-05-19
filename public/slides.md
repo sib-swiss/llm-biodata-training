@@ -2,8 +2,8 @@
 
 In this tutorial, you'll learn how to build an LLM-powered app step by step that assists in accessing biodata available at the SIB by doing retrieval augmented generation (RAG):
 
-- Redirect to the relevant SIB resources
-- Write SPARQL queries to retrieve data from SIB endpoints
+- Recommend the relevant SIB resources and tools
+- Write SPARQL queries to retrieve data from SIB public endpoints
 
 As we progress, you'll be provided with code snippets to gradually construct the system. Note that some earlier code may need to be modified or removed to prevent redundancy, ensuring a clean and efficient implementation.
 
@@ -11,13 +11,70 @@ As we progress, you'll be provided with code snippets to gradually construct the
 
 ## Outline
 
-1. Programmatically query LLMs
-2. Add context to find the right resource
-3. Build a search index to find the right context
-4. Write a custom loader for CSV file
-5. Extend search index to help writing SPARQL queries
-6. Add a step to extract information to improve search
-7. Add a web UI (optional but cool)
+1. Standards and libraries
+2. Programmatically query LLMs
+3. Add context to find the right resource
+4. Build a search index to find the right context
+5. Write a custom loader for CSV file
+6. Extend search index to help writing SPARQL queries
+7. Add a step to extract information to improve search
+8. Add a web UI (optional but cool)
+
+---
+
+## Standards and protocols
+
+- **[OpenAI-compatible APIs](https://platform.openai.com/docs/api-reference/introduction)**
+  - Original API defined by OpenAI to serve LLMs
+  - Became an unofficial standard replicated by many providers
+- **Anthropic [Model Context Protocol](https://modelcontextprotocol.io)**
+  - Recent open protocol that standardizes how applications provide context to LLMs
+  - Helps LLMs access resources and tools
+  - Limited [support](https://modelcontextprotocol.io/clients): Claude Desktop, and partially by some IDEs
+
+Common features supported by most providers:
+
+- Streaming response
+- Structured output
+  - force the LLM to answer in a structured format (e.g. JSON)
+- Tool calling
+  - provide a list of tools the LLM can use
+
+---
+
+## Agent libraries
+
+Libraries to help building workflows that use LLMs
+
+- [LangChain/LangGraph](https://www.langchain.com/)
+  - Complete “agent” framework with integrations for most LLM utilities (providers, search indexes…)
+- [LlamaIndex](https://www.llamaindex.ai/)
+  - Quite similar to LangChain
+- [smolagents](https://huggingface.co/docs/smolagents/index) by HuggingFace
+  - Introduces code-based tool calling
+- [pydantic-ai](https://ai.pydantic.dev/)
+  - Agent Framework to use Pydantic with LLMs, focusing on structured output
+- [AutoGen](https://github.com/microsoft/autogen) by microsoft
+- [Strands](https://strandsagents.com/0.1.x/) by AWS
+- And more…
+
+> ⚠️ Those libraries can evolve quickly
+
+---
+
+## UI libraries
+
+🐍 For Python
+
+- [ChainLit](https://chainlit.io/) - Build specifically for chat interface
+- [StreamLit](https://docs.streamlit.io/develop/api-reference/chat) - General python based UI with chat components
+- [Gradio](https://www.gradio.app/) - HuggingFace
+- [Mesop](https://mesop-dev.github.io/mesop/) - Google
+
+🟨 For JavaScript/TypeScript
+
+- [Vercel `ai`](https://sdk.vercel.ai/docs/introduction) NPM package
+- [assistant-ui](https://www.assistant-ui.com/)
 
 ---
 
@@ -48,6 +105,20 @@ MISTRAL_API_KEY=YYY
 ```
 
 > 💡 Create a `README.md` to put there the commands you will use
+
+----
+
+## Using Google Gemini
+
+Get your API key from https://aistudio.google.com/app/apikey
+
+In the `.env` file define `GOOGLE_API_KEY=YYY`
+
+Add the following dependency in the `pyproject.toml` at the next step:
+
+```toml
+    "langchain-google-genai >=2.1.4",
+```
 
 ---
 
@@ -117,7 +188,7 @@ from langchain_mistralai import ChatMistralAI
 
 llm = ChatMistralAI(
     model="mistral-large-latest",  # switch to small in case of quota limitations
-    # model="mistral-medium-2505", # free model mainly for development
+    # model="mistral-medium-2505", # smaller model mainly for development
     temperature=0,  # 0 for deterministic output
     max_retries=2,  # number of retries in case of error
     random_seed=42, # random seed for reproducibilit
@@ -160,7 +231,7 @@ def load_chat_model(model: str) -> BaseChatModel:
     raise ValueError(f"Unknown provider: {provider}")
 
 llm = load_chat_model("mistral/mistral-large-latest")
-# llm = load_chat_model("mistral/mistral-small-latest")
+# llm = load_chat_model("google/gemini-2.0-flash")
 ```
 
 > ℹ️ Alternatively you could replace LangChain by [LiteLLM](https://docs.litellm.ai/docs/) here to use many providers with a unified API.
@@ -421,6 +492,8 @@ def load_resources_csv(url: str) -> list[Document]:
     return docs
 ```
 
+> 🚀 Run `index.py`, then `app.py`
+
 ---
 
 ## 🧐 Explore the CSV file with your customized LLM!
@@ -483,6 +556,7 @@ def load_sparql_endpoints() -> list[Document]:
 if __name__ == "__main__":
     # [...]
     docs += load_sparql_endpoints()
+    # [...]
 ```
 
 > 🚀 Run `index.py`
@@ -538,6 +612,7 @@ ask("What is the HGNC symbol for the protein P68871?")
 ## Ask some questions
 
 - Where is the ACE2 gene expressed in humans?
+- What are the rat orthologs of the human TP53 gene?
 
 ---
 
@@ -621,7 +696,7 @@ async def on_message(msg: cl.Message):
         ("system", EXTRACT_PROMPT),
         *cl.chat_context.to_openai(), # Pass the whole chat history
     ])
-    time.sleep(1)
+    time.sleep(1) # To avoid quota limitations
     # [...]
     answer = cl.Message(content="")
     for resp in llm.stream([
@@ -872,15 +947,27 @@ The workflow should look a bit like this:
 
 ---
 
+## 🛠️ Tool calling
+
+**Introduce recursive tool use**
+
+Refactor the workflow so the LLM can decide which "tool" (e.g., query generation, execution) to call next based on the current state, iterating until no further actions are required. This enables more autonomous, multi-step reasoning and decision-making.
+
+**Add a SPARQL query execution tool**
+
+Integrate a function to execute generated queries and feed the results back into the loop for further refinement or follow-up questions.
+
+---
+
 ##  🛸 Going further
 
-Deploy the search engine as a service, required for multiple users production use (see slide below)
+**Deploy a search engine service**: Make the retrieval component accessible as an API or microservice to support production-scale, multi-user environments (see slide below)
 
-Build a MCP (model context protocol) server, [PoC here](https://github.com/sib-swiss/sparql-llm/tree/main/src/expasy-mcp)
+**Build a Model Context Protocol (MCP) server**: Coordinate context and tools with a centralized controller. [Example implementation here](https://github.com/sib-swiss/sparql-llm/blob/main/src/expasy-mcp/src/expasy_mcp/server.py).
 
-Add advanced logging to your system with [Langfuse](https://langfuse.com/)
+**Enable logging** and tracing with [Langfuse](https://langfuse.com/)
 
-Deploy a chat for free using [HuggingFace Spaces](https://huggingface.co/new-space?sdk=docker) and docker
+**Host a demo chat interface**: Deploy an interactive UI using [HuggingFace Spaces](https://huggingface.co/new-space?sdk=docker) with Docker support to share your system publicly.
 
 ----
 
@@ -928,8 +1015,6 @@ Production deployment for SIB endpoints (UniProt, Bgee, OMA, Rhea…)
 
 &nbsp;
 
-Code: [**github.com/sib-swiss/sparql-llm**](https://github.com/sib-swiss/sparql-llm)
-
-Short paper: [arxiv.org/abs/2410.06062](https://arxiv.org/abs/2410.06062)
+[Theorical slides here](https://drive.google.com/file/d/1YJjCgBh2fLM3GoWmufqlx4bxbw7eiKZ_/view)
 
 Standalone components available as a pip package: [pypi.org/project/sparql-llm](https://pypi.org/project/sparql-llm)
