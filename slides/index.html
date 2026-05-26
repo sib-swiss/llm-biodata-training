@@ -18,7 +18,6 @@
     <div class="reveal">
       <div class="slides">
         <section
-          data-markdown="slides.md"
           data-separator-vertical="^----"
           data-transition="none"
         ></section>
@@ -36,6 +35,13 @@
       // Available themes in node_modules/reveal.js/dist/theme
       // beige, black, blood, league, moon, night, serif, simple...
 
+      const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+      const path = window.location.pathname.replace(base, '').replace(/^\/|\/$/g, '');
+      const allowed = ['agents', 'tutorial'];
+      const name = allowed.includes(path) ? path : 'index';
+      document.querySelector('.slides section').setAttribute('data-markdown', `slides-${name}.md`);
+      document.title = `Slides - ${name}`;
+
       let deck = new Reveal({
         plugins: [Markdown, Highlight, ClipCode],
         // hash required to get a different URL for each page
@@ -50,7 +56,7 @@
             scale: 0.8,
             radius: 0.5,
           },
-      },
+        },
       });
       deck.initialize();
     </script>
@@ -79,6 +85,21 @@
       }
       .reveal section button:hover {
         filter: brightness(80%);
+      }
+      /* Scale tables to fit slide */
+      .reveal section table {
+        font-size: 0.5em;
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .reveal section table tbody tr:nth-child(odd) {
+        background-color: rgba(255, 255, 255, 0.03);
+      }
+      .reveal section table tbody tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.07);
+      }
+      .reveal section table th {
+        background-color: rgba(0, 0, 0, 0.1);
       }
       /* Add logo to top right */
       .reveal::after {

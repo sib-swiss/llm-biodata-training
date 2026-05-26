@@ -16,6 +16,6 @@ export default defineConfig({
           if (file.endsWith('.md')) server.ws.send({type: 'full-reload'})
         })
       }
-    }
+    },
   ],
 });

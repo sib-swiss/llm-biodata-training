@@ -1,46 +1,37 @@
 # 🧑‍🏫 Using Large Language Models for Biodata Exploration
 
-[![Deploy to GitHub pages](https://github.com/sib-swiss/llm-biodata-training/actions/workflows/deploy.yml/badge.svg)](https://github.com/sib-swiss/llm-biodata-training/actions/workflows/deploy.yml)
+Course description: [sib.swiss/training/course/20260527_BAIBE](https://www.sib.swiss/training/course/20260527_BAIBE)
 
-Course description: https://www.sib.swiss/training/course/20250930_USLLM
+Pratical slides: [sib-swiss.github.io/llm-biodata-training](https://sib-swiss.github.io/llm-biodata-training)
 
-- [Theory slides (morning session) as PDF here](https://github.com/sib-swiss/llm-biodata-training/blob/main/public/2025-09-30-LLM_From_Theory_To_Practice.pdf)
-- Pratical slides: https://sib-swiss.github.io/llm-biodata-training
+- [Coding agents presentation](https://sib-swiss.github.io/llm-biodata-training/agents)
+- [Tutorial app presentation](https://sib-swiss.github.io/llm-biodata-training/tutorial)
 
-## 🛠 Slides development
+## 🚀 Deploy chat
 
-> Prerequisites: [NodeJS](https://nodejs.org/en/download)
-
-Install dependencies:
+Create `.env` file with providers API keys:
 
 ```sh
-npm i
+OPENROUTER_API_KEY=YYY
+MISTRAL_API_KEY=YYY
+OPENAI_API_KEY=sk-proj-YYY
 ```
 
-Deploy in development:
+Start the MCP server on http://localhost:8000
 
 ```sh
-npm run dev
+uv run mcp_server.py
 ```
 
-Build for production in the `dist` folder:
+In parallel start the chat webapp on http://localhost:8001
 
 ```sh
-npm run build
+uv run chainlit run app.py --port 8001
 ```
 
-Check production build:
+Or start the 2 together on http://localhost:8000
 
 ```sh
-npm run preview
+uv run --env-file .env uvicorn main:app --port 8000 --workers 1
 ```
 
-Upgrade dependencies in `package.json`:
-
-```sh
-npm run upgrade
-```
-
-## 🎯 Deployment
-
-This slide deck is set up to automatically deploy to GitHub Pages via GitHub Actions.

@@ -1,2 +1,9 @@
 node_modules/
 dist/
+data/
+*.env
+__pycache__/
+*.pyc
+.venv/
+.ruff_cache/
+.chainlit/translations/
