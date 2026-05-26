@@ -4,8 +4,8 @@ Course description: [sib.swiss/training/course/20260527_BAIBE](https://www.sib.s
 
 Pratical slides: [sib-swiss.github.io/llm-biodata-training](https://sib-swiss.github.io/llm-biodata-training)
 
-- [Coding agents presentation](https://sib-swiss.github.io/llm-biodata-training/agents)
-- [Tutorial app presentation](https://sib-swiss.github.io/llm-biodata-training/tutorial)
+- [Coding agents presentation](https://sib-swiss.github.io/llm-biodata-training/?p=agents)
+- [Tutorial app presentation](https://sib-swiss.github.io/llm-biodata-training/?p=tutorial)
 
 ## 🚀 Deploy chat
 
