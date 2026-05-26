@@ -35,7 +35,7 @@
       // Available themes in node_modules/reveal.js/dist/theme
       // beige, black, blood, league, moon, night, serif, simple...
 
-      const allowed = ['agents', 'tutorial'];
+      const allowed = ['agents', 'tutorial', 'tools'];
       const p = new URLSearchParams(window.location.search).get('p');
       const name = allowed.includes(p) ? p : 'index';
       document.querySelector('.slides section').setAttribute('data-markdown', `slides-${name}.md`);

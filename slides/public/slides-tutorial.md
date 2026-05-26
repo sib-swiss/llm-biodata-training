@@ -1,125 +1,42 @@
 ## Building Agentic apps for Biodata Exploration
 
-In this tutorial, you will build an LLM-powered bioinformatics assistant step by step.
-
-We start with zero code using existing MCP servers directly in a web chat UI, then progressively move to Python code to connect, orchestrate, and finally serve your own tools.
+In this tutorial, you will build an LLM-powered bioinformatics assistant step by step using python.
 
 ---
 
 ## Outline
 
-1. Use existing MCP servers in a web chat UI or desktop agent
-2. Call an LLM programmatically from Python
-3. Connect to remote MCP servers
-4. Build an agentic tool loop
-5. Add a Chainlit web UI
-6. Create your own MCP server
-7. Combine server & UI in a single app
+1. Call an LLM programmatically from Python
+2. Connect to remote MCP servers
+3. Build an agentic tool loop
+4. Add a Chainlit web UI
+5. Create your own MCP server
+6. Combine server & UI in a single app
 
 ---
 
-## Part 1: Use MCP servers in a web chat UI
-
-No code required just point the chat app at a remote MCP server URL.
-
-MCP servers we will use:
+## Summary
 
 | Server | URL | What it does |
 | --- | --- | --- |
 | STRING-db | `https://mcp.string-db.org/` | Protein-protein interaction networks |
 | Expasy | `https://chat.expasy.org/mcp/` | SPARQL queries over SIB databases (UniProt, OMA, Rhea, Bgee...) |
 
-Both are public, free, no authentication required.
+- StringDB questions
+  - What are the top interaction partners of human TP53?
+  - Find proteins functionally similar to BRCA1 in humans
+  - What is the STRING network enrichment for TP53, BRCA1, and ATM?
+
+- Expasy questions
+  - What are the rat orthologs of human TP53? (OMA)
+  - Find genes highly expressed in human liver (Bgee)
+  - What biochemical reactions involve ATP hydrolysis? (Rhea)
+  - Write a SPARQL query to find all human proteins involved in apoptosis (UniProt)
+
 
 ---
 
-## Part 1: Add STRING-db to Mistral.ai Chat
-
-1. Go to [chat.mistral.ai](https://chat.mistral.ai)
-2. Click **Agents** in the sidebar > **Connectors** > **Add Connector** > **Custom MCP Connector**
-3. Server address: `https://mcp.string-db.org/`
-4. Le Chat will discover the available tools automatically
-5. Click **+** > **Connectors** to see your custom connectors
-
-Try these questions:
-
-- What are the top interaction partners of human TP53?
-- Find proteins functionally similar to BRCA1 in humans
-- What is the STRING network enrichment for TP53, BRCA1, and ATM?
-
----
-
-## Part 1: Add Expasy to ChatGPT
-
-1. Open [chatgpt.com](https://chatgpt.com) (desktop app or web)
-2. Go to **Apps** in the sidebar > ⚙️ top right > **Create app**
-3. Server URL: `https://chat.expasy.org/mcp/`
-4. ChatGPT will use the tools from the Expasy server to help write SPARQL queries against SIB endpoints
-
-Try these questions:
-
-- What are the rat orthologs of human TP53? (OMA)
-- Find genes highly expressed in human liver (Bgee)
-- What biochemical reactions involve ATP hydrolysis? (Rhea)
-- Write a SPARQL query to find all human proteins involved in apoptosis (UniProt)
-
----
-
-## Part 1: What just happened?
-
-```txt
-Web UI  -->  (discovers tools)  -->  MCP server (string-db or expasy)
-              <tool list>
-
-User asks question
-  --> LLM decides which tool to call
-  --> Web UI calls MCP server tool
-  --> Result returned to LLM
-  --> LLM synthesizes the answer
-```
-
-This is the **agentic loop**: the LLM uses tools in a loop to answer complex questions.
-
----
-
-## Part 1: Connect a MCP server to a coding agent
-
-Use your favorite coding agent (Claude Code, Codex, Cursor, OpenCode, GitHub Copilot)
-
-For [OpenCode](https://opencode.ai/download), open the user config file `~/.config/opencode/opencode.jsonc`
-
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "expasy-mcp": {
-      "type": "remote",
-      "url": "https://chat.expasy.org/mcp/",
-      "enabled": true
-    },
-    "stringdb": {
-      "type": "remote",
-      "url": "https://mcp.string-db.org/",
-      "enabled": true
-    }
-  },
-  "provider": {
-    "cesnet": {
-      "name": "Cesnet",
-      "npm": "@ai-sdk/openai-compatible",
-      "models": {
-        "qwen3-coder": {"name": "qwen3-coder"}
-      },
-      "options": {
-        "baseURL": "https://llm.ai.e-infra.cz/v1"
-      }
-    }
-  }
-```
-
----
-
-## Part 2: Setup
+## Part 1: Setup
 
 **GitHub Codespace** (already has Python, just install packages):
 
@@ -150,7 +67,7 @@ dependencies = [
 
 ---
 
-## Part 2: API keys
+## Part 1: API keys
 
 Create a `.env` file with your LLM provider API key:
 
@@ -165,7 +82,7 @@ MISTRAL_API_KEY=YYY
 
 ---
 
-## Part 2: Call an LLM from Python
+## Part 1: Call an LLM from Python
 
 Create an `app.py` file. Create a helper that picks the right LangChain class based on a `provider/model` string:
 
@@ -195,7 +112,7 @@ llm = load_chat_model("openrouter/google/gemma-4-26b-a4b-it")
 
 ---
 
-## Part 2: Invoke and stream
+## Part 1: Invoke and stream
 
 ```python
 async def main():
@@ -222,7 +139,7 @@ uv run --env-file .env app.py
 
 ---
 
-## Part 2: Use a local LLM (optional)
+## Part 1: Use a local LLM (optional)
 
 Install [Ollama](https://ollama.com/download), pull a model (warning: ~4 GB):
 
@@ -245,7 +162,7 @@ llm = load_chat_model("ollama/gemma4")
 
 ---
 
-## Part 3: Connect to a MCP server
+## Part 2: Connect to a MCP server
 
 The `mcp` package lets you connect directly to remote MCP servers over HTTP. Create `mcp_check.py`:
 
@@ -276,7 +193,7 @@ Run it: `uv run mcp_check.py`
 
 ---
 
-## Part 3: Connect to remote MCP servers
+## Part 2: Connect to remote MCP servers
 
 Add this to `app.py`. Use the `MultiServerMCPClient` connects to one or more MCP servers:
 
@@ -305,7 +222,7 @@ async def main():
 
 ---
 
-## Part 4: Build an agent
+## Part 3: Build an agent
 
 An **agent** is a model that calls tools in a loop until it has enough information to answer. Update `app.py`:
 
@@ -330,7 +247,7 @@ async def main():
 
 ---
 
-## Part 4: Stream agent steps
+## Part 3: Stream agent steps
 
 ```python
 from langchain_core.messages import AIMessageChunk, ToolMessage
@@ -354,7 +271,7 @@ async def main():
 
 ---
 
-## Part 5: Add a chat web UI
+## Part 4: Add a chat web UI
 
 [Chainlit](https://docs.chainlit.io) is a Python framework that turns async functions into a chat UI. Replace the `main()` function approach with Chainlit lifecycle hooks.
 
@@ -382,7 +299,7 @@ uv run chainlit run app.py
 
 ---
 
-## Part 5: Handle messages and stream tool steps
+## Part 4: Handle messages and stream tool steps
 
 ```python
 from langchain_core.messages import AIMessage, AIMessageChunk, HumanMessage, ToolMessage
@@ -422,7 +339,7 @@ async def on_message(message: cl.Message):
 
 ---
 
-## Part 5: Starter questions and UI customization
+## Part 4: Starter questions and UI customization
 
 ```python
 @cl.set_starters
@@ -447,7 +364,7 @@ Customize the UI in `.chainlit/config.toml`
 
 ---
 
-## Part 5: Add auth and chat history persistence
+## Part 4: Add auth and chat history persistence
 
 Add password auth and SQLite-backed chat history to `app.py`:
 
@@ -477,7 +394,7 @@ Then start the app as usual. Chainlit will now show a login screen and persist a
 
 ---
 
-## Part 6: Create your own MCP server
+## Part 5: Create your own MCP server
 
 We will build tools that query two SIB databases:
 
@@ -488,7 +405,7 @@ We will build tools that query two SIB databases:
 
 ---
 
-## Part 6: Create your own MCP server
+## Part 5: Create your own MCP server
 
 Create a `mcp_server.py` file. To build an MCP server in Python just decorate Python functions with `@mcp.tool()`:
 
@@ -529,7 +446,7 @@ def uniprot_search(
 
 ---
 
-## Part 6: Key design patterns for MCP tools
+## Part 5: Key design patterns for MCP tools
 
 1. **Rich docstrings the LLM's only interface**
 
@@ -555,7 +472,7 @@ return "P04637 is TP53, involved in Li-Fraumeni syndrome..."
 
 ---
 
-## Part 6: Tools to implement
+## Part 5: Tools to implement
 
 **uniprot_search**(query, organism, reviewed_only, max_results)
 
@@ -586,7 +503,7 @@ GET https://www.rhea-db.org/rhea
 
 ---
 
-## Part 6: Run your MCP server
+## Part 5: Run your MCP server
 
 Start the server in a separate terminal:
 
@@ -617,7 +534,7 @@ mcp_client = MultiServerMCPClient({
 
 ---
 
-## Part 7: Combine server & UI in one app
+## Part 6: Combine server & UI in one app
 
 Create `main.py` to run the MCP server and Chainlit UI as a single FastAPI app without the need to start 2 separate processes:
 
@@ -647,7 +564,7 @@ async def root() -> RedirectResponse:
 
 ---
 
-## Part 7: Run the combined app
+## Part 6: Run the combined app
 
 ```sh
 # Codespace
@@ -664,7 +581,7 @@ uv run uvicorn main:app --host 0.0.0.0 --port 8000
 
 ---
 
-## Part 7: ask questions
+## Part 6: ask questions
 
 - Search for reviewed human TP53 proteins in UniProt
 - What is the function of human BRCA1 and which diseases is it linked to?

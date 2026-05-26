@@ -59,10 +59,10 @@ async def init_agent():
             "url": "https://mcp.string-db.org/",
             "transport": "streamable_http",
         },
-        # "expasy": {
-        #     "url": "https://chat.expasy.org/mcp/",
-        #     "transport": "streamable_http",
-        # },
+        "expasy": {
+            "url": "https://chat.expasy.org/mcp/",
+            "transport": "streamable_http",
+        },
     })
     tools = await mcp_client.get_tools()
     llm = load_chat_model(LLM_MODEL)

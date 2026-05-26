@@ -21,9 +21,9 @@ Introduction to using coding agents to interact with biological data and databas
 
 Biological data has always required code to access and process data:
 
-- **Databases** (UniProt, Ensembl) expose REST APIs, SPARQL endpoints, querying them means writing Python, R, or SPARQL
+- **Databases** (UniProt, Ensembl) expose REST APIs, endpoints, querying them means writing Python, R, SQL, or SPARQL
 - **Formats** (FASTQ, VCF, PDB) require parsers and domain-specific libraries (Biopython, Bioconductor)
-- **Analysis pipelines** (variant calling, protein structure prediction, pathway enrichment) are code, not GUIs
+- **Analysis pipelines** (variant calling, protein structure prediction, pathway enrichment) needs to be coded
 
 > "All Biology is Computational Biology"
 
@@ -41,6 +41,8 @@ LLMs can assist in two complementary ways:
 | **Interpretation** | Summarize retrieved records, explain biological significance |
 
 It can write code, parse the result, and explain what it means, closing the loop between data retrieval and biological insight.
+
+Research requires exact provenance and traceability, which is not guaranteed by regular LLM inference, tools to connect to trustworthy databases are needed.
 
 ---
 
