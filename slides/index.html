@@ -35,10 +35,9 @@
       // Available themes in node_modules/reveal.js/dist/theme
       // beige, black, blood, league, moon, night, serif, simple...
 
-      const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-      const path = window.location.pathname.replace(base, '').replace(/^\/|\/$/g, '');
       const allowed = ['agents', 'tutorial'];
-      const name = allowed.includes(path) ? path : 'index';
+      const p = new URLSearchParams(window.location.search).get('p');
+      const name = allowed.includes(p) ? p : 'index';
       document.querySelector('.slides section').setAttribute('data-markdown', `slides-${name}.md`);
       document.title = `Slides - ${name}`;
 
