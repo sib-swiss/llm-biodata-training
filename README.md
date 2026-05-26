@@ -6,7 +6,7 @@ Course description: [sib.swiss/training/course/20260527_BAIBE](https://www.sib.s
 
 ### Day 1 (27 May)
 
-**09:00 - 10:00** [Introduction to LLMs, Embeddings and RAG](https://docs.google.com/presentation/d/1YylYJFhrXQew5cAug00TB9RVoU6sGaWT/edit?usp=drive_link&ouid=106167242104510220555&rtpof=true&sd=true)
+**09:00 - 10:00** [Introduction to LLMs, Embeddings and RAG](https://docs.google.com/presentation/d/1YylYJFhrXQew5cAug00TB9RVoU6sGaWT)
 
 **10:00 - 10:30** [Evolution of LLMs](https://docs.google.com/presentation/d/1IiSaAcSJPGwccJAQhaghbSM6dvy2PX19/edit?usp=share_link&ouid=112653300494738350810&rtpof=true&sd=true)
 
@@ -16,7 +16,7 @@ Course description: [sib.swiss/training/course/20260527_BAIBE](https://www.sib.s
 
 **12:00 - 13:00** Lunch break
 
-**13:00 - 14:15** [Data access beyond Web APIs for Agentic AI](https://sibcloud-my.sharepoint.com/:p:/g/personal/panayiotis_smeros_sib_swiss/IQDGrReGLY6FSYSLPaLIzk5SASHIN-RPt_dRJfw-xjTWlRk?e=FhDG6N)
+**13:00 - 14:15** [Data access beyond Web APIs for Agentic AI](https://sibcloud-my.sharepoint.com/:p:/g/personal/panayiotis_smeros_sib_swiss/IQDGrReGLY6FSYSLPaLIzk5SAZPuOqywNFpZWwoVHDneH3c?e=EJhXeF)
 
 **14:15 - 15:00** [Demo: LLM-driven literature review](https://docs.google.com/presentation/d/1qO34DTg718LkmHU6L58HobJNo6dX_u5S/edit?usp=share_link&ouid=112653300494738350810&rtpof=true&sd=true)
 
