@@ -19,13 +19,13 @@ Introduction to using coding agents to interact with biological data and databas
 
 ## Biodata requires code
 
-Biological data has always required code to access and process data:
+Biological data and scientific research has increasingly required code to access and process data:
 
 - **Databases** (UniProt, Ensembl) expose REST APIs, endpoints, querying them means writing Python, R, SQL, or SPARQL
 - **Formats** (FASTQ, VCF, PDB) require parsers and domain-specific libraries (Biopython, Bioconductor)
 - **Analysis pipelines** (variant calling, protein structure prediction, pathway enrichment) needs to be coded
 
-> "All Biology is Computational Biology"
+> Some even says that ["All Biology is Computational Biology"](https://doi.org/10.1371/journal.pbio.2002050)
 
 But biologists are not computer scientists by training.
 

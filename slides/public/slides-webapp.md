@@ -10,8 +10,7 @@ In this tutorial, you will build an LLM-powered bioinformatics assistant step by
 2. Connect to remote MCP servers
 3. Build an agentic tool loop
 4. Add a Chainlit web UI
-5. Create your own MCP server
-6. Combine server & UI in a single app
+5. Combine server & UI in a single app
 
 ---
 
@@ -394,149 +393,9 @@ Then start the app as usual. Chainlit will now show a login screen and persist a
 
 ---
 
-## Part 5: Create your own MCP server
+## Part 5: Combine server & UI in one app
 
-We will build tools that query two SIB databases:
-
-| Database | URL | Description |
-| --- | --- | --- |
-| **UniProt** | [uniprot.org](https://www.uniprot.org) | World's leading protein knowledgebase with 570k+ reviewed Swiss-Prot entries and 250M+ TrEMBL sequences. Each entry contains protein function, taxonomy, sequence, subcellular location, post-translational modifications, disease associations, and cross-references to 100+ databases. |
-| **Rhea** | [rhea-db.org](https://www.rhea-db.org) | Expert-curated database of 15k+ biochemical reactions covering metabolism, transport, and biosynthesis. Reactions are described using ChEBI chemical identifiers and linked to UniProt enzymes, allowing precise querying of which proteins catalyze which reactions. |
-
----
-
-## Part 5: Create your own MCP server
-
-Create a `mcp_server.py` file. To build an MCP server in Python just decorate Python functions with `@mcp.tool()`:
-
-```python
-import requests
-from mcp.server.fastmcp import FastMCP
-
-mcp = FastMCP(
-    name="Biodata MCP",
-    instructions="Query UniProt and Rhea databases",
-    streamable_http_path="/",
-)
-
-@mcp.tool()
-def uniprot_search(
-    query: str,
-    organism: str = "Homo sapiens",
-    reviewed_only: bool = True,
-    max_results: int = 5,
-) -> dict:
-    """Search UniProt for proteins matching a query (gene name, function, keyword).
-
-    UniProt is the world's leading protein knowledgebase (Swiss-Prot/TrEMBL).
-    'Reviewed' entries are manually curated with high-quality annotation.
-
-    Args:
-        query: Free-text query. Examples: "TP53", "kinase AND cancer".
-        organism: Organism filter (default "Homo sapiens"). Use "" for all.
-        reviewed_only: Restrict to Swiss-Prot reviewed entries.
-        max_results: Number of results to return (max 25).
-
-    Example questions:
-        "Find reviewed human kinases involved in DNA repair"
-        "Search for mouse insulin proteins in UniProt"
-    """
-    ...  # implementation calls https://rest.uniprot.org
-```
-
----
-
-## Part 5: Key design patterns for MCP tools
-
-1. **Rich docstrings the LLM's only interface**
-
-The LLM reads the docstring to decide *when* and *how* to call the tool. A weak docstring means wrong tool selection.
-
-2. **Return structured dicts, not plain strings**
-
-```python
-# Good: LLM can reason over fields
-return {"accession": "P04637", "gene": "TP53", "diseases": [...], "go_terms": [...]}
-
-# Bad: harder to parse, wastes tokens
-return "P04637 is TP53, involved in Li-Fraumeni syndrome..."
-```
-
-3. **Truncate large payloads**
-
-```python
-"variants": variants[:50]
-"go_terms": go_terms[:10]
-"sequence": sequence[:2000]
-```
-
----
-
-## Part 5: Tools to implement
-
-**uniprot_search**(query, organism, reviewed_only, max_results)
-
-```txt
-GET https://rest.uniprot.org/uniprotkb/search
-    ?query=TP53 AND organism_name:Homo sapiens AND reviewed:true
-    &format=json&fields=accession,gene_names,protein_name,organism_name,length,reviewed
-```
-
-**uniprot_get_entry**(accession)
-
-```txt
-GET https://rest.uniprot.org/uniprotkb/{accession}?format=json
-```
-
-**uniprot_get_sequence**(accession)
-
-```txt
-GET https://rest.uniprot.org/uniprotkb/{accession}.fasta
-```
-
-**rhea_search_reactions**(query, max_results)
-
-```txt
-GET https://www.rhea-db.org/rhea
-    ?query=ATP hydrolysis&format=json&columns=rhea-id,equation,chebi-id&limit=8
-```
-
----
-
-## Part 5: Run your MCP server
-
-Start the server in a separate terminal:
-
-```sh
-# Codespace
-python mcp_server.py
-
-# Local with uv
-uv run --env-file .env mcp_server.py
-```
-
-The MCP endpoint is now at `http://localhost:8000`.
-
-You can add it alongside the remote servers in `app.py`:
-
-```python
-mcp_client = MultiServerMCPClient({
-    "biodata": {
-        "url": "http://127.0.0.1:8000/mcp",
-        "transport": "streamable_http",
-    },
-    "string": {
-        "url": "https://mcp.string-db.org/",
-        "transport": "streamable_http",
-    },
-})
-```
-
----
-
-## Part 6: Combine server & UI in one app
-
-Create `main.py` to run the MCP server and Chainlit UI as a single FastAPI app without the need to start 2 separate processes:
+Uses the `mcp_server.py` built in the previous section. Create `main.py` to run the MCP server and Chainlit UI as a single FastAPI app without the need to start 2 separate processes:
 
 ```python
 import contextlib
@@ -564,7 +423,7 @@ async def root() -> RedirectResponse:
 
 ---
 
-## Part 6: Run the combined app
+## Part 5: Run the combined app
 
 ```sh
 # Codespace
@@ -581,7 +440,7 @@ uv run uvicorn main:app --host 0.0.0.0 --port 8000
 
 ---
 
-## Part 6: ask questions
+## Part 5: ask questions
 
 - Search for reviewed human TP53 proteins in UniProt
 - What is the function of human BRCA1 and which diseases is it linked to?
