@@ -12,7 +12,9 @@ from langchain_openai import ChatOpenAI
 from pydantic import SecretStr
 from chainlit.data.sql_alchemy import SQLAlchemyDataLayer
 
-LLM_MODEL="cesnet/qwen3-coder"
+LLM_MODEL="openrouter/google/gemma-4-26b-a4b-it"
+# LLM_MODEL="openrouter/mistralai/mistral-small-2603"
+# LLM_MODEL="cesnet/qwen3-coder"
 # LLM_MODEL="ollama/gemma4"
 # LLM_MODEL="mistralai/mistral-small-latest"
 

@@ -176,11 +176,9 @@ Example question: Show datasets about weather time-series available on huggingfa
 
 ## MCP with stdio
 
-Local MCP servers run as a subprocess via `stdio` - requires the tool installed locally
+Local MCP servers run as a subprocess via `stdio` (requires [`uv`](https://docs.astral.sh/uv) installed)
 
-Requires [`uv`](https://docs.astral.sh/uv) installed
-
-For OpenCode:
+e.g. [PubMed MCP](https://github.com/grll/pubmedmcp) added to OpenCode:
 
 ```json
 {

@@ -32,6 +32,39 @@ Or does it need to deploy a whole database with indexing and maintenance?
 
 ---
 
+## Setup GitHub Codespace
+
+**GitHub Codespace** (already has Python, just install packages):
+
+[github.com/codespaces](https://github.com/codespaces/) > **Blank** > **Use this template**
+
+Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/) in github codespace:
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Now you can use `uv` to manage projects and dependencies
+
+---
+
+## Setup dependencies
+
+Create a `pyproject.toml`:
+
+```toml
+[project]
+name = "biodata-mcp"
+version = "0.0.1"
+requires-python = "==3.13.*"
+dependencies = [
+    "mcp >=1.15.0",
+    "requests >=2.34.2",
+]
+```
+
+---
+
 ## Implement the MCP server
 
 Create a `mcp_server.py` file. To build an MCP server in Python just decorate Python functions with `@mcp.tool()`:
@@ -41,7 +74,7 @@ from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP(
     name="Biodata MCP",
-    instructions="Do cool stuff",
+    instructions="Do bio-cool stuff",
     streamable_http_path="/",
 )
 
@@ -118,14 +151,10 @@ GET https://www.rhea-db.org/rhea
 Start the server:
 
 ```sh
-# Codespace
-python mcp_server.py
-
-# Local with uv
-uv run --env-file .env mcp_server.py
+uv run mcp_server.py
 ```
 
-The MCP endpoint is now at `http://localhost:8000/mcp`.
+The MCP endpoint is now at `http://localhost:8000/`.
 
 Point any MCP-compatible client at it to use your tools:
 
@@ -135,7 +164,7 @@ Point any MCP-compatible client at it to use your tools:
   "mcp": {
     "biodata": {
       "type": "remote",
-      "url": "http://localhost:8000/mcp",
+      "url": "http://localhost:8000/",
       "enabled": true
     }
   }
@@ -144,27 +173,21 @@ Point any MCP-compatible client at it to use your tools:
 
 ---
 
-## Test questions
+## Questions
 
 - Search for reviewed human TP53 proteins in UniProt
 - What is the function of human BRCA1 and which diseases is it linked to?
-- Find the human enzyme for glucose phosphorylation
-- What biochemical reactions involve ATP hydrolysis in Rhea?
+- What is the sequence of the enzyme that catalyzes ATP hydrolysis, and what reactions involve it?
+- Find the human enzyme for glucose phosphorylation and look up the Rhea reactions it catalyzes
 
 ---
 
 ## What's next?
 
-Publish or deploy:
+Publish or deploy remotely?
 
 - If just a wrapper that can run locally: publish as pip/npm package running through stdio transport
 - If needs to run remotely (e.g. connected to a closed remote database): deploy as remote HTTP server
-
-Then this MCP server in:
-
-- Any MCP-compatible chat UI (Mistral Le Chat, ChatGPT)
-- Coding agents (Claude Code, OpenCode, Cursor)
-- A Python Chainlit webapp (next section)
 
 ---
 

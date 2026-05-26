@@ -20,6 +20,7 @@ In this tutorial, you will build an LLM-powered bioinformatics assistant step by
 | --- | --- | --- |
 | STRING-db | `https://mcp.string-db.org/` | Protein-protein interaction networks |
 | Expasy | `https://chat.expasy.org/mcp/` | SPARQL queries over SIB databases (UniProt, OMA, Rhea, Bgee...) |
+| New local | `http://localhost:8000` | Search UniProt and Rhea |
 
 - StringDB questions
   - What are the top interaction partners of human TP53?
@@ -31,21 +32,19 @@ In this tutorial, you will build an LLM-powered bioinformatics assistant step by
   - Find genes highly expressed in human liver (Bgee)
   - What biochemical reactions involve ATP hydrolysis? (Rhea)
   - Write a SPARQL query to find all human proteins involved in apoptosis (UniProt)
+- New server: UniProt / Rhea
+  - Search for reviewed human TP53 proteins in UniProt
+  - What is the function of human BRCA1 and which diseases is it linked to?
+  - What is the sequence of the enzyme that catalyzes ATP hydrolysis, and what reactions involve it?
+  - Find the human enzyme for glucose phosphorylation and look up the Rhea reactions it catalyzes
+
 
 
 ---
 
-## Part 1: Setup
+## Part 1: Setup dependencies
 
-**GitHub Codespace** (already has Python, just install packages):
-
-```sh
-pip install langchain langchain-openai langchain-mcp-adapters chainlit "mcp[cli]" requests
-```
-
-**Local with [uv](https://docs.astral.sh/uv/getting-started/installation/)** (recommended for local dev):
-
-Create a `pyproject.toml`:
+Add more dependencies to the `pyproject.toml`:
 
 ```toml
 [project]
@@ -53,31 +52,36 @@ name = "biodata-agent"
 version = "0.0.1"
 requires-python = "==3.13.*"
 dependencies = [
-    "mcp >=1.15.0",
-    "requests >=2.34.2",
+    # [...]
     "chainlit >=2.8.1",
     "langchain >=1.3.1",
     "langchain-mcp-adapters >=0.2.2",
     "langchain-openai >=1.2.2",
     "langchain-ollama >=1.1.0",
     "langchain-mistralai >=1.1.4",
+    "SQLAlchemy >=2.0.40",
 ]
 ```
 
 ---
 
-## Part 1: API keys
+## Part 1: LLM provider
 
-Create a `.env` file with your LLM provider API key:
+First step is to choose your LLM provider, and get an API key
+
+> - [OpenRouter](https://openrouter.ai/settings/keys) - hundreds of models from all providers, +5% on price per token compared to providers price, free tier
+> - [MistralAI](https://console.mistral.ai/api-keys) - European provider, free tier
+> - The usual suspects: Google, Anthropic, OpenAI...
+
+If you don't have your own, we are providing an API key for OpenRouter model:
+
+`openrouter/google/gemma-4-26b-a4b-it`
+
+Create a `.env` file with the LLM provider API key(s):
 
 ```sh
-# Use one of:
 OPENROUTER_API_KEY=YYY
-MISTRAL_API_KEY=YYY
 ```
-
-> - [OpenRouter](https://openrouter.ai/settings/keys) - hundreds of models, +10% on price per token compared to providers price
->- [MistralAI](https://console.mistral.ai/api-keys) - European provider, free tier
 
 ---
 
@@ -102,7 +106,7 @@ def load_chat_model(model: str) -> BaseChatModel:
         )
     if provider == "mistralai":
         from langchain_mistralai import ChatMistralAI
-        return ChatMistralAI(model=model_name, temperature=0, max_tokens=2048)
+        return ChatMistralAI(model_name=model_name, temperature=0, max_tokens=2048)
     raise ValueError(f"Unknown provider: {provider}")
 
 llm = load_chat_model("openrouter/google/gemma-4-26b-a4b-it")
@@ -363,36 +367,6 @@ Customize the UI in `.chainlit/config.toml`
 
 ---
 
-## Part 4: Add auth and chat history persistence
-
-Add password auth and SQLite-backed chat history to `app.py`:
-
-```python
-from chainlit.data.sql_alchemy import SQLAlchemyDataLayer
-
-@cl.password_auth_callback
-async def auth_callback(username: str, password: str) -> cl.User | None:
-    if (username, password) == ("admin", "admin"):
-        return cl.User(identifier="admin", metadata={"role": "ADMIN"})
-    return None
-
-@cl.data_layer
-def get_data_layer():
-    return SQLAlchemyDataLayer(conninfo="sqlite+aiosqlite:///./data/chainlit.db")
-```
-
-Add to the `.env`: `CHAINLIT_AUTH_SECRET=your-secret-here`
-
-Initialize the database before the first run:
-
-```sh
-uv run init_db.py
-```
-
-Then start the app as usual. Chainlit will now show a login screen and persist all conversations in `data/chainlit.db`.
-
----
-
 ## Part 5: Combine server & UI in one app
 
 Uses the `mcp_server.py` built in the previous section. Create `main.py` to run the MCP server and Chainlit UI as a single FastAPI app without the need to start 2 separate processes:
@@ -446,6 +420,38 @@ uv run uvicorn main:app --host 0.0.0.0 --port 8000
 - What is the function of human BRCA1 and which diseases is it linked to?
 - What is the sequence of the enzyme that catalyzes ATP hydrolysis, and what reactions involve it?
 - Find the human enzyme for glucose phosphorylation and look up the Rhea reactions it catalyzes
+
+---
+
+## Advanced: Add auth and chat history persistence
+
+> ⚠️ Does not work in GitHub Codespace because of port forwarding
+
+Add password auth and SQLite-backed chat history to `app.py`:
+
+```python
+from chainlit.data.sql_alchemy import SQLAlchemyDataLayer
+
+@cl.password_auth_callback
+async def auth_callback(username: str, password: str) -> cl.User | None:
+    if (username, password) == ("admin", "admin"):
+        return cl.User(identifier="admin", metadata={"role": "ADMIN"})
+    return None
+
+@cl.data_layer
+def get_data_layer():
+    return SQLAlchemyDataLayer(conninfo="sqlite+aiosqlite:///./data/chainlit.db")
+```
+
+Add to the `.env`: `CHAINLIT_AUTH_SECRET=your-secret-here`
+
+Initialize the database before the first run:
+
+```sh
+uv run init_db.py
+```
+
+Then start the app as usual. Chainlit will now show a login screen and persist all conversations in `data/chainlit.db`.
 
 ---
 
