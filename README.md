@@ -8,7 +8,7 @@ Course description: [sib.swiss/training/course/20260527_BAIBE](https://www.sib.s
 
 **09:00 - 10:00** [Introduction to LLMs, Embeddings and RAG](https://docs.google.com/presentation/d/1YylYJFhrXQew5cAug00TB9RVoU6sGaWT)
 
-**10:00 - 10:30** [Evolution of LLMs](https://docs.google.com/presentation/d/1IiSaAcSJPGwccJAQhaghbSM6dvy2PX19/edit?usp=share_link&ouid=112653300494738350810&rtpof=true&sd=true)
+**10:00 - 10:30** [Evolution of LLMs](https://drive.google.com/file/d/1o36w6vuVeJwwizhWFxb7OOkRSIoc9KBt/view?usp=sharing)
 
 **10:30 - 11:00** Coffee break
 
