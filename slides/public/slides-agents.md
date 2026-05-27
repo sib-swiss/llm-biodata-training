@@ -221,6 +221,8 @@ Poorly designed instructions can **reduce** performance: too long, too vague, or
 
 ```markdown
 - Read existing files before writing code
+- No sycophantic openers or closing fluff
+- No em dashes, smart quotes, or Unicode characters. ASCII only
 - Keep solutions simple and direct. No over-engineering
 - If unsure: say so. Never guess or invent file paths and function names
 - Always check for lint and type errors before ending a task, and fix if there are some errors related to your changes
