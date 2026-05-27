@@ -206,6 +206,14 @@ Requires a place to execute the skill, e.g. your laptop
 
 Find skill for UniProt: [skills.sh](https://www.skills.sh)
 
+Install using the npm `skills` package:
+
+```sh
+npx skills add https://github.com/google-deepmind/science-skills --skill uniprot-database
+```
+
+Or copy the skill folder in your agent local skill folder, e.g. `.claude/skills/uniprot-database/` (depends on the coding agent used)
+
 ---
 
 ## References
