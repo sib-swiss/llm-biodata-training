@@ -18,7 +18,7 @@ Course description: [sib.swiss/training/course/20260527_BAIBE](https://www.sib.s
 
 **13:00 - 14:15** [Data access beyond Web APIs for Agentic AI](https://sibcloud-my.sharepoint.com/:p:/g/personal/panayiotis_smeros_sib_swiss/IQDGrReGLY6FSYSLPaLIzk5SAZPuOqywNFpZWwoVHDneH3c?e=EJhXeF)
 
-**14:15 - 15:00** [Demo: LLM-driven literature review](https://docs.google.com/presentation/d/1qO34DTg718LkmHU6L58HobJNo6dX_u5S/edit?usp=share_link&ouid=112653300494738350810&rtpof=true&sd=true)
+**14:15 - 15:00** [Demo: LLM-driven literature review](https://drive.google.com/file/d/1qtJviXzSs7F5-rtgVJjMx-TkgAvpCMxw/view?usp=share_link)
 
 **15:00 - 15:30** Coffee break
 
