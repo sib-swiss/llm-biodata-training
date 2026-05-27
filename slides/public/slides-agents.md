@@ -46,11 +46,11 @@ Research requires exact provenance and traceability, which is not guaranteed by 
 
 ---
 
-## Who is using what?
+## What are you using?
 
 Are you already using some LLM-powered systems?
 
-Are you paying a subscription to some?
+Are you paying a subscription?
 
 ---
 
