@@ -46,6 +46,14 @@ Research requires exact provenance and traceability, which is not guaranteed by 
 
 ---
 
+## Who is using what?
+
+Are you already using some LLM-powered systems?
+
+Are you paying a subscription to some?
+
+---
+
 ## What are LLM agents?
 
 > An LLM agent runs tools in a loop to achieve a goal
@@ -244,25 +252,16 @@ The agent sees only the tool name, docstring, and typed parameters, never the im
 
 ```python
 from mcp.server.fastmcp import FastMCP
-from pydantic import BaseModel
 
 mcp = FastMCP(
-    name="SIB MCP", dependencies=["mcp", "pydantic"],
-    instructions="Tools for biodata exploration.",
+    name="Biodata MCP",
+    instructions="Tools for biodata exploration",
 )
 
 @mcp.tool()
-async def search_datasets(search_input: str, update_date: str | None = None) -> list[SearchResult]:
-    """Search for datasets relevant to the user question.
-
-    Args:
-        search_input: Natural language search input
-        update_date: Optional last update date in yyyy-MM-dd
-
-    Returns:
-        Relevant datasets
-    """
-    return get_relevant_datasets(search_input, update_date)
+def add(a: int, b: int) -> int:
+    """Add two integers together."""
+    return a + b
 
 if __name__ == "__main__":
     mcp.run(transport="streamable-http")
@@ -273,6 +272,8 @@ if __name__ == "__main__":
 ## MCP registries
 
 Official registry effort: [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io)
+
+With the goal of having sub-registries pulling data from the main registry.
 
 GitHub curated MCP registry: [github.com/mcp](https://github.com/mcp)
 
