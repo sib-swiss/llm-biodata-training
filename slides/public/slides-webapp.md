@@ -234,7 +234,10 @@ from langchain.agents import create_agent
 
 SYSTEM_PROMPT = """You are a bioinformatics assistant with access to SIB databases.
 Always use tools to retrieve real data, never invent accessions or sequences.
-For multi-step questions, chain tools: search -> get entry -> get interactions."""
+For multi-step questions, chain tools: search -> get entry -> get interactions.
+When using STRING tools:
+- pass NCBI taxonomy IDs as strings, never numbers
+- use "9606" for human, "10090" for mouse, "10116" for rat passed as strings"""
 
 async def main():
     tools = await get_mcp_tools()
