@@ -20,7 +20,7 @@ async def main() -> None:
             # Call string_all_interaction_partners for TP53
             result = await session.call_tool(
                 "string_all_interaction_partners",
-                arguments={"identifiers": "TP53", "species": "9606", "required_score": "700", "limit": "50"},
+                arguments={"identifiers": "TP53", "species": "9606", "required_score": "700"},
             )
             raw = json.dumps([c.model_dump() for c in result.content])
             print(raw)
