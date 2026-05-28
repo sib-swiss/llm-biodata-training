@@ -243,7 +243,7 @@ async def main():
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
     )
-    question = "What are the top interaction partners of human TP53?"
+    question = "What are the top interaction partners of TP53?"
     result = await agent.ainvoke({"messages": [("human", question)]})
     print(result["messages"][-1].content)
 ```
