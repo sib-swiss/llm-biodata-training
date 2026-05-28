@@ -173,6 +173,29 @@ Point any MCP-compatible client at it to use your tools:
 
 ---
 
+## Run your MCP server in GitHub Copilot
+
+VSCode `settings.json`:
+
+```json
+{
+	"servers": {
+		"my-mcp-server-http": {
+			"url": "http://127.0.0.1:8000",
+			"type": "http"
+		},
+		"my-mcp-server-stdio": {
+			"type": "stdio",
+			"command": "uv",
+			"args": ["run", "--directory", "${workspaceFolder}", "mcp_server.py"]
+		}
+	},
+	"inputs": []
+}
+```
+
+---
+
 ## Questions
 
 - Search for reviewed human TP53 proteins in UniProt
