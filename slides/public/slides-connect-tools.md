@@ -146,6 +146,22 @@ For [OpenCode](https://opencode.ai/download), open the user config file `~/.conf
 
 ---
 
+## Connect a MCP server to proprietary agents
+
+Claude Code stores it in `~/.claude.json`:
+
+```sh
+claude mcp add stringdb --transport http https://mcp.string-db.org/
+```
+
+Codex stores it in `~/.codex/config.toml`: 
+
+```sh
+codex mcp add stringdb -- --transport http https://mcp.string-db.org/
+```
+
+---
+
 ## MCP with authentication
 
 HuggingFace MCP server uses an API key to pass as env variable
@@ -171,6 +187,10 @@ For OpenCode:
 ```
 
 Example question: Show datasets about weather time-series available on huggingface
+
+```sh
+claude mcp add huggingface --transport http --header "Authorization: Bearer ${HF_TOKEN}" https://huggingface.co/mcp
+```
 
 ---
 
@@ -202,9 +222,11 @@ Example questions:
 
 ## Use skills
 
-Requires a place to execute the skill, e.g. your laptop
+A folder with a `SKILL.md` file, and additional docs or scripts
 
-Find skill for UniProt: [skills.sh](https://www.skills.sh)
+Requires to download the skill, e.g. to your laptop
+
+Find skills for UniProt: [skills.sh](https://www.skills.sh)
 
 Install using the npm `skills` package:
 

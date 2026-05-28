@@ -184,10 +184,34 @@ Point any MCP-compatible client at it to use your tools:
 
 ## What's next?
 
-Publish or deploy remotely?
+Publish as package or deploy remotely?
 
-- If just a wrapper that can run locally: publish as pip/npm package running through stdio transport
-- If needs to run remotely (e.g. connected to a closed remote database): deploy as remote HTTP server
+If just a wrapper that can run locally on users machines 6: publish as pip/npm package running through stdio transport
+
+If needs to run remotely (e.g. on the same server as a database): deploy as remote streamable HTTP server
+
+---
+
+## MCP apps
+
+Recent [MCP extension](https://github.com/modelcontextprotocol/ext-apps) enabling tools to return interactive user interfaces
+
+Make the tool return a resource with the protocol `ui`, 
+
+[e.g. `ui:///map.html`](https://github.com/vemonet/openroute-mcp/blob/main/src/openroute_mcp/server.py#L95), with mime-type `text/html`
+
+```python
+tool_resp.append(
+    EmbeddedResource(
+        type="resource",
+        resource=TextResourceContents(text=html_str, uri=AnyUrl(f"ui:///map.html"), mimeType="text/html"),
+    ),
+)
+```
+
+> ⚠️ Not supported by a lot of clients: [Goose](https://goose-docs.ai/docs/getting-started/installation) and Claude Desktop
+
+If you can, create a tool returning a MCP App.
 
 ---
 
