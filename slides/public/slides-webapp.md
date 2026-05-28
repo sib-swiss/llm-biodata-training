@@ -185,7 +185,7 @@ async def main() -> None:
             # Call a specific tool:
             result = await session.call_tool(
                 "string_all_interaction_partners",
-                arguments={"identifiers": "TP53", "species": "9606", "required_score": "700", "limit": "5"},
+                arguments={"identifiers": "TP53", "species": "9606", "required_score": "700"},
             )
             print(json.dumps([c.model_dump() for c in result.content], indent=2))
 
