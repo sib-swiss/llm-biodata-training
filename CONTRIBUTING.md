@@ -34,6 +34,12 @@ Or start the 2 together on http://localhost:8000
 uv run --env-file .env uvicorn main:app --port 8000 --workers 1
 ```
 
+To enable auth, initialize the SQLite db:
+
+```sh
+uv run init_db.py
+```
+
 ## 🛠 Slides development
 
 > Prerequisites: [NodeJS](https://nodejs.org/en/download)
